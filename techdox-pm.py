@@ -24,7 +24,7 @@ loop=True
 while loop:
 	render_menu()
 ## Get input ###
-	choice = input('Enter your choice [1-7] : ')
+	choice = input('Enter your choice [1-10] : ')
  
 ### Convert string to int type ##
 	choice = int(choice)
