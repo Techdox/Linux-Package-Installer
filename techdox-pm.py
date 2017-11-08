@@ -9,9 +9,15 @@ def getinput(get_string):
 
 ## Show menu ##
 def render_menu():
-	print (30 * '-')
+	print (35 * '-')
 	print ("   TECHDOX - PACKAGE - INSTALLER")
-	print (30 * '-')
+	print ('''
+\t      \  |  /
+\t       \ | /
+\t  ______\|/______
+\t /_______n_______\\
+\t~~~~~~~~~~~~~~~~~~~''')
+	print (35 * '-')
 	print ("1. Install Steam")
 	print ("2. Install Chromium")
 	print ("3. Install Spotify")
