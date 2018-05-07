@@ -1,6 +1,6 @@
-import subprocess
-import os
-import time
+import os, time, collections
+
+DEBUG = True
 
 install = {
 	"Steam": 'sudo apt install steam',
@@ -12,19 +12,21 @@ install = {
 	'Dropbox': 'sudo apt install dropbox',
 	'Visual Studio Code': 'curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg && sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg && sudo sh -c \'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main\" > /etc/apt/sources.list.d/vscode.list\' && sudo apt update && sudo apt install code',
 	'Kodi Media Player': 'sudo apt install kodi',
-	
-
 }
-numberofitems = len(install.values())
+install = collections.OrderedDict(sorted(install.items()))
+numberofitems = len(install.items())
+
+selecteditems = []
+
 def getinput(get_string):
 	try:
-		return int(input(get_string))
-	except Exception as ex:
-		return - 1
+		return int(get_string)
+	except Exception:
+		return -1
 
 def render_menu():
-	print (35 * '-')
-	print ("   TECHDOX - PACKAGE - INSTALLER")
+	print(35 * '-')	
+	print ("    TECHDOX - PACKAGE - INSTALLER")
 	print ('''
 \t      \  |  /
 \t       \ | /
@@ -32,14 +34,56 @@ def render_menu():
 \t /_______n_______\\
 \t~~~~~~~~~~~~~~~~~~~''')
 	print (35 * '-')
+	print ("Install:")
 	for i in range(numberofitems):
-		print ('%i Install %s'%(i+1,install.keys()[i]))
-	print (30 * '-')
+		print ('{}\t[{}] {}'.format(i+1, 'X' if i in selecteditems else ' ',list(install.keys())[i]))
+	print (35 * '-')
+	print("Enter q to quit, Enter c to confirm selection")
 
-while True:
-	render_menu()
-	choice = getinput('Enter Your Choice [1-%i]: '%(numberofitems))-1
-	if choice >= numberofitems or choice < 0:
+def help_message():
+	print("Some helpful infomation ;)")
+	print("Press enter to continue")
+
+def parse_input(choice):
+	if choice == 'c':
+		return True
+	elif choice == 'q':
+		print("Exiting!")
+		quit()
+	elif choice == "help":
+		help_message()
+		input()
+
+
+	choice = getinput(choice)-1
+	if getinput(choice) >= numberofitems or getinput(choice) < 0:
 		print ('Please Follow The INSTRUCTIONS!')
-		continue
-	os.system('%s -y'%install.values()[choice])
+	else:
+		selecteditems.append(choice)
+	
+	return False
+	
+
+def run_installers():
+	for i in selecteditems:
+		if DEBUG:
+			print('%s -y'%list(install.values())[i])
+		else:
+			os.system('%s -y'%list(install.values())[i])
+
+		
+
+def main():
+	while True:
+		render_menu()
+		choice = input("Enter Your Choice [1-{}]: ".format(numberofitems)).lower()
+		
+		if parse_input(choice):
+			run_installers()
+			break
+
+		
+		
+
+if __name__ == "__main__":
+	main()
